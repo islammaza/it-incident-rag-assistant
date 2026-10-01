@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Generated FAISS indexes and related artifacts
+*.faiss
+*.index
+backend/indexes/*
+!backend/indexes/.gitkeep
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/*.log

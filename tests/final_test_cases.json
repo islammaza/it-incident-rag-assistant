@@ -1,0 +1,62 @@
+[
+  {
+    "name": "PostgreSQL restart failure",
+    "query": "PostgreSQL connection refused on port 5432 after server restart",
+    "expected_route": "both"
+  },
+  {
+    "name": "Nginx deployment gateway error",
+    "query": "Nginx returns 502 Bad Gateway after the application was deployed",
+    "expected_route": "both"
+  },
+  {
+    "name": "DNS resolution failure",
+    "query": "The workstation can ping 8.8.8.8 but cannot resolve domain names",
+    "expected_route": "both"
+  },
+  {
+    "name": "Docker startup restart loop",
+    "query": "Docker container keeps restarting immediately after startup",
+    "expected_route": "both"
+  },
+  {
+    "name": "Application crash after deployment",
+    "query": "An internal application started crashing immediately after the latest deployment",
+    "expected_route": "historical"
+  },
+  {
+    "name": "Application report export failure",
+    "query": "The internal application crashes when exporting a large report",
+    "expected_route": "historical"
+  },
+  {
+    "name": "HTTP 503 reference question",
+    "query": "What does HTTP 503 Service Unavailable mean?",
+    "expected_route": "documentation"
+  },
+  {
+    "name": "PostgreSQL authentication reference",
+    "query": "How does pg_hba.conf control PostgreSQL client authentication?",
+    "expected_route": "documentation"
+  },
+  {
+    "name": "Localhost concept",
+    "query": "What is localhost?",
+    "expected_route": "direct"
+  },
+  {
+    "name": "TCP port concept",
+    "query": "What is a TCP port?",
+    "expected_route": "direct"
+  },
+  {
+    "name": "Linux disk full",
+    "query": "Ubuntu server reports no space left on device",
+    "expected_route": "both"
+  },
+  {
+    "name": "Linux memory pressure",
+    "query": "Linux server reaches 98% memory usage and becomes slow",
+    "expected_route": "both"
+  }
+]

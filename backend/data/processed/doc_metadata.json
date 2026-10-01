@@ -1,0 +1,222 @@
+[
+  {
+    "chunk_id": "dns_resolution_troubleshooting_000",
+    "document_id": "dns_resolution_troubleshooting",
+    "title": "DNS Resolution Troubleshooting",
+    "source": "Ubuntu Documentation",
+    "url": "https://documentation.ubuntu.com/server/how-to/networking/install-dns/",
+    "product": "DNS / Networking",
+    "topic": "DNS Resolution",
+    "chunk_index": 0,
+    "text": "# DNS Resolution Troubleshooting DNS translates hostnames into addresses and can fail even when direct IP connectivity works. Separate name resolution from network reachability: first query the name, then test the resulting address and service port. Useful local commands include `resolvectl status`, `resolvectl query name`, `getent hosts name`, and `dig name` when available. Check which resolver is configured, whether it is reachable, and whether the requested name belongs to the expected internal zone. Common observations include `NXDOMAIN` for a name that does not exist, `SERVFAIL` for an authoritative or recursive failure, and timeouts when the resolver cannot be reached or does not respond in time. ## Troubleshooting sequence 1. Confirm the exact hostname, search domain, and expected address. 2. Inspect active resolver configuration. 3. Query the name from the affected host and a known-good host. 4. Test resolver connectivity and the returned address separately. 5. Check recent DNS records, network changes, and resolver logs. 6. Flush a local cache only after correcting the underlying record or resolver issue. Do not replace an internal hostname with an IP as a permanent fix without understanding the service dependency. Record the query result and resolver used, but do not include confidential domain data in this public synthetic knowledge base."
+  },
+  {
+    "chunk_id": "docker_container_logs_000",
+    "document_id": "docker_container_logs",
+    "title": "Docker Container Logs",
+    "source": "Docker Documentation",
+    "url": "https://docs.docker.com/engine/logging/",
+    "product": "Docker",
+    "topic": "Container Logs",
+    "chunk_index": 0,
+    "text": "# Docker Container Logs Docker captures output written to a container's standard output and standard error through a logging driver. `docker logs CONTAINER` displays available output; `--since`, `--until`, and `--tail` help narrow a noisy incident. Logs are useful for startup failures, repeated exceptions, missing settings, and dependency connection errors. The exact output and retention behavior depends on the configured logging driver. A containerized application that writes only to files inside the container may not appear in `docker logs`; in that case, inspect the application's configured log destination according to its documented procedure. ## Troubleshooting sequence 1. Identify the exact container and its current state with `docker ps -a`. 2. Read recent output with `docker logs --tail 200 CONTAINER`. 3. Compare the first failure with later repeated messages. 4. Check the image, command, environment, mounts, and network configuration. 5. Correct the configuration or image, then recreate the container when appropriate. 6. Confirm logs show a healthy startup rather than only a running process. Avoid putting credentials, tokens, or private request payloads into diagnostic notes. Container logs can also consume host disk space, so retention and rotation should be checked when disk alerts accompany container incidents."
+  },
+  {
+    "chunk_id": "docker_environment_variables_000",
+    "document_id": "docker_environment_variables",
+    "title": "Docker Environment Variables",
+    "source": "Docker Documentation",
+    "url": "https://docs.docker.com/compose/how-tos/environment-variables/",
+    "product": "Docker",
+    "topic": "Environment Variables",
+    "chunk_index": 0,
+    "text": "# Docker Environment Variables Containerized applications often receive non-secret runtime settings through environment variables. Compose can read values from the shell, an environment file, or an explicit `environment` section. The final value available inside the container should be verified because interpolation and precedence can differ between the host configuration and the container environment. Missing variables frequently cause startup errors, while a wrong value can make an application connect to the wrong service or use the wrong mode. Inspect configuration structure and variable names without printing secrets. Use a sanitized or non-sensitive setting when demonstrating a diagnosis. ## Troubleshooting checklist - Check the variable name expected by the application. - Inspect the resolved Compose configuration when appropriate. - Confirm the variable is present inside the running container. - Compare non-sensitive values with the environment's approved configuration. - Recreate the container after changing environment variables; a running process does not automatically receive new values. - Review startup logs and the application health check. Do not commit passwords, tokens, private keys, or populated secret files. Environment variables are configuration inputs, not a substitute for a secret-management policy. For this local knowledge base, only generic variable names and non-sensitive examples are used."
+  },
+  {
+    "chunk_id": "docker_networking_000",
+    "document_id": "docker_networking",
+    "title": "Docker Container Networking",
+    "source": "Docker Documentation",
+    "url": "https://docs.docker.com/engine/network/",
+    "product": "Docker",
+    "topic": "Container Networking",
+    "chunk_index": 0,
+    "text": "# Docker Container Networking Containers communicate through Docker networks. On a user-defined bridge network, containers can use the other container's name as a hostname. `localhost` inside a container refers to that same container, not to another container or to the Docker host. This distinction commonly explains application-to-database connection failures. A service must listen on the expected container port, and both containers must share a network that permits the connection. Publishing a port with `-p HOST_PORT:CONTAINER_PORT` makes a container port reachable from the host or configured external path; it is not required for two containers on the same user-defined network to communicate directly. ## Troubleshooting sequence 1. List networks with `docker network ls`. 2. Inspect the network and confirm both containers are attached. 3. Confirm the application uses the database or service name, not an incorrect `localhost` value. 4. Check the target process's listening port inside its container. 5. Review container logs and test resolution from the calling container. 6. Verify published ports only when host access is required. The network name, service name, container port, and host port are different concepts. Record which one appears in the error. Avoid exposing a database port externally merely to make container-to-container communication work."
+  },
+  {
+    "chunk_id": "docker_restart_exit_behavior_000",
+    "document_id": "docker_restart_exit_behavior",
+    "title": "Docker Container Restart and Exit Behavior",
+    "source": "Docker Documentation",
+    "url": "https://docs.docker.com/engine/containers/start-containers-automatically/",
+    "product": "Docker",
+    "topic": "Restart Policies and Exit Codes",
+    "chunk_index": 0,
+    "text": "# Docker Container Restart and Exit Behavior A container stops when its main process exits. `docker ps -a` shows stopped containers, their exit status, and the command that was run. An exit code is a symptom of the process result, not a complete diagnosis; the container logs and image command explain why it stopped. Docker restart policies control whether a container is restarted after it exits or after the Docker daemon starts. Common policies include `no`, `on-failure`, `always`, and `unless-stopped`. A restart policy can make a failed application appear as a restart loop, so inspect the current status and recent logs before changing it. ## Troubleshooting checklist - Run `docker ps -a` and note status, restart count, and exit code. - Read the first startup error with `docker logs`. - Inspect the image entrypoint and command. - Verify required mounts, environment variables, files, and network dependencies. - Check whether the restart policy is masking a deterministic startup failure. - Recreate the container only after correcting the underlying input. A healthy container process does not guarantee a healthy application. Use the application's health endpoint or a documented health check after startup. Do not use an infinite restart policy to hide a configuration or dependency failure."
+  },
+  {
+    "chunk_id": "http_500_000",
+    "document_id": "http_500",
+    "title": "HTTP 500 Internal Server Error",
+    "source": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500",
+    "product": "HTTP / Web",
+    "topic": "HTTP 500",
+    "chunk_index": 0,
+    "text": "# HTTP 500 Internal Server Error HTTP status `500 Internal Server Error` means the server encountered an unexpected condition that prevented it from fulfilling the request. It describes the response class, not the root cause. The application log, web server log, request timestamp, route, and a sanitized reproduction are needed to identify the failure. ## Troubleshooting approach - Confirm whether all routes fail or only one operation. - Correlate the request time with application and reverse-proxy logs. - Check recent deployments, configuration changes, and dependency health. - Look for uncaught exceptions, invalid input handling, missing files, database errors, or permission failures. - Reproduce with a minimal non-sensitive request. - Verify the response after correcting the underlying application problem. A proxy can return a 500 generated by the upstream application or by its own processing, so inspect both layers. Avoid replacing the response with a generic retry without collecting the server-side error. The client generally cannot fix a genuine 500 response by changing browser settings."
+  },
+  {
+    "chunk_id": "http_502_000",
+    "document_id": "http_502",
+    "title": "HTTP 502 Bad Gateway",
+    "source": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/502",
+    "product": "HTTP / Web",
+    "topic": "HTTP 502",
+    "chunk_index": 0,
+    "text": "# HTTP 502 Bad Gateway HTTP status `502 Bad Gateway` means a gateway or proxy received an invalid response from an upstream server. In a common reverse-proxy setup, the proxy is reachable but cannot successfully communicate with the application service behind it. ## Troubleshooting approach 1. Confirm the proxy process is running and serving the expected host. 2. Inspect proxy error logs for the upstream address and failure reason. 3. Check whether the upstream application process is running and listening on the configured port. 4. Test the upstream locally from the proxy host when permitted. 5. Verify DNS, network access, protocol, and proxy path settings. 6. Review the upstream application's startup and error logs. `Connection refused` often indicates that no process is listening at the configured upstream endpoint. A timeout points more toward routing, firewall, or an overloaded upstream. A malformed response can indicate an upstream protocol mismatch or an application failure. Correct the layer that produced the failure, then test through the same proxy hostname and path."
+  },
+  {
+    "chunk_id": "http_503_000",
+    "document_id": "http_503",
+    "title": "HTTP 503 Service Unavailable",
+    "source": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/503",
+    "product": "HTTP / Web",
+    "topic": "HTTP 503",
+    "chunk_index": 0,
+    "text": "# HTTP 503 Service Unavailable HTTP status `503 Service Unavailable` indicates that the server is currently not ready to handle the request, commonly because of temporary overload or maintenance. The response may include `Retry-After`, but clients should not treat retries as a fix when the service remains unhealthy. ## Troubleshooting approach - Determine whether the response comes from the application, reverse proxy, load balancer, or maintenance layer. - Check service health, readiness checks, worker capacity, and dependency availability. - Inspect deployment and maintenance events around the first failure. - Review logs for exhausted connections, unavailable upstreams, startup failures, and resource pressure. - Confirm whether only new instances are failing or all instances are affected. - Verify recovery with the documented health endpoint and a representative request. A 503 differs from a 502: 503 means the responding service is unavailable or not ready, while 502 describes an invalid response from an upstream gateway target. Keep the observed status, response headers, proxy route, and timestamp in incident notes."
+  },
+  {
+    "chunk_id": "linux_cpu_memory_troubleshooting_000",
+    "document_id": "linux_cpu_memory_troubleshooting",
+    "title": "Linux CPU and Memory Troubleshooting",
+    "source": "Ubuntu Documentation",
+    "url": "https://documentation.ubuntu.com/server/how-to/monitor-your-system/system-monitoring/",
+    "product": "Linux / Ubuntu",
+    "topic": "CPU and Memory",
+    "chunk_index": 0,
+    "text": "# Linux CPU and Memory Troubleshooting High CPU and memory usage should be tied to a process and a time window before changing configuration. Tools such as `top`, `htop`, `ps`, `free`, and `vmstat` show current resource pressure. Compare the observation with application metrics and recent deployments rather than assuming that high utilization alone is the root cause. A process consuming CPU can indicate normal workload, a stuck worker, a retry loop, or a runaway diagnostic setting. Memory pressure can cause swapping, slow responses, or an out-of-memory kill. Review kernel messages and service logs when a process disappears unexpectedly. ## Troubleshooting sequence - Record load average, CPU usage, memory, swap, and the top processes. - Check whether the behavior is constant or tied to a request, job, or deployment. - Inspect application worker counts, queue depth, and recent configuration changes. - Review logs for repeated retries, allocation failures, or OOM messages. - Stop or restart only the affected process when an approved procedure exists. - Verify resource usage and application response after the correction. Do not increase memory limits blindly. A larger limit can move pressure to the host, while a smaller worker count or bounded queue may address the actual cause. Preserve timestamps and process names in incident notes so later diagnosis can compare similar events."
+  },
+  {
+    "chunk_id": "linux_disk_space_000",
+    "document_id": "linux_disk_space",
+    "title": "Linux Disk Space Troubleshooting",
+    "source": "Ubuntu Documentation",
+    "url": "https://documentation.ubuntu.com/server/how-to/monitor-your-system/disk-space/",
+    "product": "Linux / Ubuntu",
+    "topic": "Disk Space",
+    "chunk_index": 0,
+    "text": "# Linux Disk Space Troubleshooting A full filesystem can prevent applications from writing logs, temporary files, sockets, or database files. Start with `df -h` to see capacity by mounted filesystem. Use `du` on the affected mount to identify directories consuming space, while avoiding unrelated mounts and sensitive file contents. The filesystem with available space is important: freeing space on `/home` does not fix a full `/var`, and freeing space on the root filesystem does not necessarily fix a separate database volume. Check inode usage with `df -i` when files appear small but creation still fails. ## Diagnostic approach - Identify the exact mount reported in the error. - Compare used space with recent application, system, and container log growth. - Check whether log rotation is configured and operating. - Look for old, approved temporary files or artifacts. - Check for deleted files still held open by a process if usage does not match visible files. - Make a controlled cleanup, then verify application writes. Do not delete active database files, arbitrary logs, or unknown application data. Prefer the application's retention mechanism, log rotation, or an approved archive procedure. After cleanup, confirm both free space and the original operation, because a service may need a restart or retry."
+  },
+  {
+    "chunk_id": "linux_file_permissions_000",
+    "document_id": "linux_file_permissions",
+    "title": "Linux File Permissions Troubleshooting",
+    "source": "Ubuntu Documentation",
+    "url": "https://documentation.ubuntu.com/desktop/en/latest/tutorial/file-permissions/",
+    "product": "Linux / Ubuntu",
+    "topic": "File Permissions",
+    "chunk_index": 0,
+    "text": "# Linux File Permissions Troubleshooting Linux file access is evaluated using an owning user, an owning group, and permission bits for the owner, group, and others. `ls -l path` shows ownership and mode. A service may fail even when an administrator can read a file, because the service runs as a different account and may also need execute permission on every parent directory. When an application reports `Permission denied`, identify the account running the process and inspect the target file and its parent directories. Confirm whether the operation needs read, write, or execute access. Do not solve an application problem by making a file world-writable or running the service as root. ## Troubleshooting checklist 1. Identify the process account from the service definition or process list. 2. Inspect ownership and permissions with `ls -l` and `namei -l`. 3. Check whether a parent directory blocks traversal. 4. Compare the path with the application's configured path. 5. Restore the narrow, approved owner/group and mode. 6. Retry the original operation and inspect the application log. Configuration files, upload directories, log directories, and deployment paths often need different ownership. Make the smallest permission change that matches the intended service design, and record the path and account involved without recording secrets or private file contents."
+  },
+  {
+    "chunk_id": "linux_systemd_services_000",
+    "document_id": "linux_systemd_services",
+    "title": "Linux systemd Service Troubleshooting",
+    "source": "Ubuntu Documentation",
+    "url": "https://documentation.ubuntu.com/server/explanation/systemd/service-management/",
+    "product": "Linux / Ubuntu",
+    "topic": "systemd Services",
+    "chunk_index": 0,
+    "text": "# Linux systemd Service Troubleshooting `systemd` manages many Linux services. `systemctl status service-name` shows whether a service is active, failed, or stopped and includes recent status information. `systemctl start`, `stop`, `restart`, and `reload` perform the corresponding service operations when permitted. `systemctl enable` configures a service to start during boot; it does not start the service immediately unless `--now` is also used. For more detail, use `journalctl -u service-name` to inspect the service journal. The journal often contains the first useful error, such as a missing file, invalid configuration, permission failure, unavailable dependency, or occupied port. ## Troubleshooting sequence 1. Run `systemctl status service-name`. 2. Read recent entries with `journalctl -u service-name --since ...`. 3. Validate the service configuration using the product's validation command. 4. Check paths, ownership, dependencies, and listening ports. 5. Apply the smallest approved correction and restart or reload the service. 6. Verify the service and its health endpoint after the change. A service that is `enabled` can still be `failed`, and a service that is `active` can still expose an application-level failure. Treat the service status, journal, and application health check as separate observations."
+  },
+  {
+    "chunk_id": "nginx_logs_000",
+    "document_id": "nginx_logs",
+    "title": "Nginx Access and Error Logs",
+    "source": "Nginx Documentation",
+    "url": "https://nginx.org/en/docs/http/ngx_http_log_module.html",
+    "product": "Nginx",
+    "topic": "Logs",
+    "chunk_index": 0,
+    "text": "# Nginx Access and Error Logs Nginx writes access logs for requests and error logs for processing and upstream failures. The access log helps establish the request method, path, response status, and timing. The error log provides details such as failed upstream connections, invalid configuration, permission problems, and protocol errors. When investigating an HTTP incident, correlate the client-visible status with the Nginx error log and the upstream application's log using a narrow time window. Record the hostname, route, status, and relevant error class without copying credentials, tokens, or private request bodies. ## Useful questions - Did the request reach the expected `server_name` block? - Is the status generated by Nginx or returned by the upstream? - Does the error name an upstream host and port? - Are failures limited to one route, method, or client network? - Did the incident begin after a reload, deployment, or certificate change? Log rotation and retention matter on busy systems. A missing current log may indicate a path, permission, rotation, or disk-space problem. Validate configuration and file ownership before changing logging broadly."
+  },
+  {
+    "chunk_id": "nginx_reverse_proxy_000",
+    "document_id": "nginx_reverse_proxy",
+    "title": "Nginx Reverse Proxy and Upstream Troubleshooting",
+    "source": "Nginx Documentation",
+    "url": "https://nginx.org/en/docs/http/ngx_http_proxy_module.html",
+    "product": "Nginx",
+    "topic": "Reverse Proxy and Upstreams",
+    "chunk_index": 0,
+    "text": "# Nginx Reverse Proxy and Upstream Troubleshooting Nginx forwards requests to an upstream server with the `proxy_pass` directive. The proxy location, upstream hostname, port, URI handling, and request headers must match the application contract. A syntactically valid Nginx configuration can still point to the wrong service or path. Use `nginx -t` before reloading a configuration. Inspect the active server block and confirm the `server_name` selected for the request. When Nginx returns 502 or 504, compare the configured upstream with the application's actual listening address and port. ## Diagnostic sequence 1. Validate syntax with `nginx -t`. 2. Read the Nginx error log for the upstream endpoint and reason. 3. Check the application service status and listening socket. 4. Test the upstream locally from the Nginx host when permitted. 5. Verify DNS, path rewriting, protocol, and timeout settings. 6. Reload only after validation, then test through the public proxy path. `connection refused` usually means the target address has no accepting listener. A timeout can indicate network filtering or a slow upstream. Keep proxy configuration changes narrow and preserve the previous known-good configuration for rollback."
+  },
+  {
+    "chunk_id": "postgresql_authentication_000",
+    "document_id": "postgresql_authentication",
+    "title": "PostgreSQL Client Authentication",
+    "source": "PostgreSQL Documentation",
+    "url": "https://www.postgresql.org/docs/current/auth-pg-hba-conf.html",
+    "product": "PostgreSQL",
+    "topic": "Authentication",
+    "chunk_index": 0,
+    "text": "# PostgreSQL Client Authentication PostgreSQL controls client authentication with `pg_hba.conf`. Each record describes a connection type, database, user, client address or network, and authentication method. PostgreSQL checks records in order, so the first matching record determines the result. A later, more specific rule does not override an earlier matching rule. For TCP connections, `host` records are used. The client address must match the address or network in the rule. A connection can therefore reach port `5432` successfully and still fail because the client subnet, database, or user is not allowed. Common messages include `no pg_hba.conf entry` and password authentication failures. ## Troubleshooting checklist - Confirm the actual client IP or subnet. - Confirm the requested database and user. - Inspect the applicable `pg_hba.conf` entries in order. - Check the configured authentication method and server logs. - Reload PostgreSQL after an approved configuration change. Use the PostgreSQL configuration view or the server's documented configuration path to confirm which file is active. Avoid broad access rules when a narrower approved network is sufficient. After changing authentication rules, test the exact application connection and verify that unrelated access was not widened."
+  },
+  {
+    "chunk_id": "postgresql_connection_settings_000",
+    "document_id": "postgresql_connection_settings",
+    "title": "PostgreSQL Connection Settings",
+    "source": "PostgreSQL Documentation",
+    "url": "https://www.postgresql.org/docs/current/libpq-connect.html",
+    "product": "PostgreSQL",
+    "topic": "Connections",
+    "chunk_index": 0,
+    "text": "# PostgreSQL Connection Settings PostgreSQL clients can specify a connection with a keyword/value string, a URI, or separate parameters. The commonly relevant settings are `host`, `port`, `dbname`, `user`, and authentication-related options. The default PostgreSQL port is `5432`; a non-default port must be supplied by the client and by the server configuration. ## Troubleshooting checklist 1. Confirm the database hostname resolves to the expected private address. 2. Test whether the host accepts TCP connections on the configured port. 3. Confirm the client and server use the same database name and user. 4. Check whether the server is listening on the requested address and port. 5. Review the server log for connection, startup, or authentication messages. A connection refusal usually means that no process is accepting connections at the target address and port, or that a firewall is rejecting the connection. A timeout can indicate a routing or firewall problem. If the TCP connection succeeds but PostgreSQL rejects the client, inspect authentication rules and the database logs. Connection settings should be kept separate from application code where possible. Do not place passwords or other secrets in this knowledge base. When diagnosing an incident, record the non-sensitive host, port, database, and observed error, then verify the result with a small application health check."
+  },
+  {
+    "chunk_id": "postgresql_server_startup_000",
+    "document_id": "postgresql_server_startup",
+    "title": "PostgreSQL Server Startup Troubleshooting",
+    "source": "PostgreSQL Documentation",
+    "url": "https://www.postgresql.org/docs/current/server-start.html",
+    "product": "PostgreSQL",
+    "topic": "Server Startup",
+    "chunk_index": 0,
+    "text": "# PostgreSQL Server Startup Troubleshooting When PostgreSQL does not accept connections, first determine whether the server process is running and whether it completed startup. On a Linux installation managed by systemd, inspect the service status and journal. PostgreSQL logs commonly identify invalid configuration, missing directories, unavailable filesystems, port conflicts, or recovery in progress. A service can be active while the database is still starting or while it listens on a different address than the client expects. Check the configured port and `listen_addresses`, then confirm the listening socket with an operating-system tool. A connection refusal means the requested socket is not accepting connections; it does not by itself identify whether the cause is a stopped service, wrong address, port conflict, or firewall. ## Safe diagnostic sequence 1. Check service status and recent startup logs. 2. Validate the PostgreSQL configuration before reloading or restarting. 3. Confirm the data directory and required filesystem are mounted and writable. 4. Check for another process using the expected port. 5. Confirm the server is listening on the expected address and port. 6. Test a local connection, then an approved application connection. Do not repeatedly restart a database without reviewing logs. If recovery is active after an unclean shutdown, allow it to complete unless the documented operational procedure says otherwise."
+  },
+  {
+    "chunk_id": "tcp_port_connectivity_000",
+    "document_id": "tcp_port_connectivity",
+    "title": "TCP Port Connectivity Troubleshooting",
+    "source": "Microsoft Learn",
+    "url": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection",
+    "product": "DNS / Networking",
+    "topic": "TCP Connectivity and Ports",
+    "chunk_index": 0,
+    "text": "# TCP Port Connectivity Troubleshooting A service can have a resolvable hostname and a reachable host while its application port remains unavailable. Test the layers separately: resolve the name, reach the address, and then test the target TCP port. On Windows, `Test-NetConnection host -Port 5432` reports TCP connectivity. On Linux, an approved equivalent such as `nc -vz host 5432` or a client-specific connection test can check the port. A successful ping does not prove that a TCP service is available; ICMP and TCP are separate protocols. `Connection refused` generally means the target host actively rejected the connection or no process is listening. A timeout may indicate filtering, routing failure, an unavailable host, or a service that is not responding. ## Diagnostic sequence 1. Confirm the hostname resolves to the expected private address. 2. Test the exact port from the same network location as the application. 3. Check the server process and listening socket. 4. Review host and network firewall rules for the source and destination. 5. Compare with a known-good client or subnet. 6. Retest the application protocol after correcting the failing layer. Use the smallest approved test and avoid scanning unrelated ports. Keep private addresses and service names synthetic in documentation and incident examples."
+  },
+  {
+    "chunk_id": "windows_dns_troubleshooting_000",
+    "document_id": "windows_dns_troubleshooting",
+    "title": "Windows DNS Troubleshooting",
+    "source": "Microsoft Learn",
+    "url": "https://learn.microsoft.com/en-us/windows-server/networking/dns/troubleshoot/troubleshoot-dns-data-collection",
+    "product": "Windows",
+    "topic": "DNS Troubleshooting",
+    "chunk_index": 0,
+    "text": "# Windows DNS Troubleshooting Windows DNS incidents should be investigated from the affected client and compared with a known-good system. `ipconfig /all` identifies configured DNS servers. `nslookup name` performs a direct lookup and shows which server answered. PowerShell's `Resolve-DnsName name` provides structured query details for supported records. Check whether the result is an address, `NXDOMAIN`, a timeout, or a server failure. Confirm that the client is querying the intended internal resolver and that the resolver can reach authoritative sources. A stale client cache can preserve an old result, but clearing it should follow correction of the record or resolver path rather than replace that diagnosis. ## Troubleshooting sequence - Record the exact name and record type being queried. - Compare results from the affected and known-good clients. - Check DNS server addresses and network reachability. - Query the intended server directly when permitted. - Review recent DNS record, DHCP, VPN, or network profile changes. - Retest the application hostname after the DNS issue is corrected. Keep diagnostic outputs limited to synthetic or non-sensitive names in shared notes. DNS success proves name resolution only; test the resulting service address and port separately."
+  },
+  {
+    "chunk_id": "windows_network_troubleshooting_000",
+    "document_id": "windows_network_troubleshooting",
+    "title": "Windows Network Troubleshooting",
+    "source": "Microsoft Learn",
+    "url": "https://learn.microsoft.com/en-us/windows-server/networking/troubleshoot/troubleshoot-tcpip",
+    "product": "Windows",
+    "topic": "Network Troubleshooting",
+    "chunk_index": 0,
+    "text": "# Windows Network Troubleshooting Windows network diagnosis should distinguish local adapter state, addressing, routing, name resolution, and application port access. `ipconfig /all` shows interface addresses, gateways, and DNS servers. `ping` can check basic IP reachability, while `tracert` can help show where a route stops. `Test-NetConnection` can test a specific TCP port and report name resolution and route information. ## Troubleshooting sequence 1. Check the adapter state and address with `ipconfig /all`. 2. Confirm the default gateway and DNS servers are expected. 3. Resolve the target hostname and compare the address with a known-good client. 4. Test the exact service port with `Test-NetConnection`. 5. Compare behavior from another network location. 6. Review Windows Firewall, VPN routes, and recent network profile changes. A successful name lookup does not guarantee that the service port is reachable. A failed ping does not necessarily mean the application is down because ICMP may be filtered. Capture the exact command result, target, and timestamp so the network team can compare it with firewall or server logs."
+  }
+]
